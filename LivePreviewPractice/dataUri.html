@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data UrI</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body>
+    <script>
+        async function loadContent() {
+            var url = 'http://127.0.0.1:5500/index1.html'; // Use your server-side proxy
+            var iframe = document.createElement('iframe');
+            iframe.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(await fetch(url).then(response => response.text()));
+            document.body.appendChild(iframe);
+        }
+        loadContent();
+
+        
+        // async function loadHTMLContent() {
+        //     var htmlUrl = 'http://127.0.0.1:5500/image.html';
+        //     var offScreenDiv = document.createElement('div');
+
+        //     // Fetch HTML content from the server
+        //     var response = await fetch(htmlUrl);
+        //     var htmlContent = await response.text();
+
+        //     // Set max-width to 100% to prevent width overflow
+        //     offScreenDiv.style.maxWidth = '100%';
+
+        //     // Set position to absolute to take it off-screen
+        //     offScreenDiv.style.position = 'absolute';
+        //     offScreenDiv.style.left = '-9999px';
+
+        //     // Append the HTML content to the off-screen div
+        //     offScreenDiv.innerHTML = htmlContent;
+        //     document.body.appendChild(offScreenDiv);
+
+        //     // Use html2canvas to capture a screenshot of the div
+        //     var screenshot = await html2canvas(offScreenDiv);
+
+        //     // Draw the screenshot onto the visible canvas
+        //     var canvas = document.getElementById('myCanvas');
+
+        //     // Check if the canvas element is found
+        //     if (canvas) {
+        //         var ctx = canvas.getContext('2d');
+        //         ctx.drawImage(screenshot, 0, 0, canvas.width, canvas.height);
+
+        //         // Remove the off-screen div from the body
+        //         document.body.removeChild(offScreenDiv);
+        //     } else {
+        //         console.error('Canvas with ID "myCanvas" not found.');
+        //     }
+        // }
+
+        // loadHTMLContent();
+
+
+    </script>
+</body>
+
+</html>

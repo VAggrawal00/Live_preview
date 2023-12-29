@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Live Preview with DOM Parser</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body>
+
+    <button onclick="loadContent()">Load Content</button>
+
+    <canvas id="myCanvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
+
+    <script>
+        async function loadContent() {
+            var url = 'http://127.0.0.1:5500/index.html';
+            var canvas = document.getElementById('myCanvas');
+
+            try {
+                // Fetch HTML content from another page
+                var response = await fetch(url);
+                var htmlContent = await response.text();
+
+                // Parse HTML string using DOMParser
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlContent, 'text/html');
+
+                // Create a div element and set its content to the parsed HTML
+                var divElement = document.createElement('div');
+                divElement.appendChild(doc.body.cloneNode(true));
+
+                // Append the div to the body
+                document.body.appendChild(divElement);
+
+                // Use html2canvas to capture a screenshot of the div
+                var screenshot = await html2canvas(divElement);
+
+                // Draw the screenshot onto the canvas
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(screenshot, 0, 0, canvas.width, canvas.height);
+
+                // Remove the div from the body
+                document.body.removeChild(divElement);
+            } catch (error) {
+                console.error('Error fetching HTML content:', error.message);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

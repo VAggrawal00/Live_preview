@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Live Preview with fetch API for same look</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+</head>
+
+<body style="overflow-x: hidden;">
+    <!-- Working good, without width scroll and image is showing -->
+    <button onclick="loadContent()">Load Content</button>
+
+    <canvas id="myCanvas" style="border: 1px solid #000; max-width: 100%;"></canvas>
+
+    <script>
+        async function loadContent() {
+            var url = 'http://127.0.0.1:5500/index1.html';
+            var canvas = document.getElementById('myCanvas');
+
+            //    var crossDomain = isCrossDomain(url);
+            //    console.log("cross domain", crossDomain);
+            try {
+                // Fetch HTML content from another page
+                var response = await fetch(url);
+                var htmlContent = await response.text();
+                // console.log("response",response);
+
+                console.log("htmlContent", htmlContent);
+
+                // Create a div element and set its content to the fetched HTML
+                var divElement = document.createElement('div');
+                divElement.innerHTML = htmlContent;
+
+                // Set max-width to 100% to prevent width overflow
+                divElement.style.maxWidth = '100%';
+
+                // Append the div to the body (off-screen)
+                divElement.style.position = 'absolute';
+                divElement.style.left = '-9999px';
+                document.body.appendChild(divElement);
+
+                // Get the dimensions of the content
+                var contentWidth = divElement.offsetWidth;
+                var contentHeight = divElement.offsetHeight;
+                console.log("contentWidth", contentWidth);
+                console.log("contentHeight", contentHeight);
+
+                // Set the canvas dimensions to match the content
+                canvas.width = contentWidth;
+                canvas.height = contentHeight;
+
+                // Use html2canvas to capture a screenshot of the div
+                var screenshot = await html2canvas(divElement);
+
+                // Draw the screenshot onto the canvas
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(screenshot, 0, 0, contentWidth, contentHeight);
+
+                // Remove the div from the body
+                document.body.removeChild(divElement);
+
+           
+            } catch (error) {
+                console.error('Error fetching HTML content:', error.message);
+            }
+        }
+
+    
+    </script>
+
+</body>
+
+</html>
+
+
+
+<!-- // function isCrossDomain(url) {
+    //     if (url.indexOf("data:") != 0) {
+    //         var a = document.createElement('a');
+    //         a.href = url;
+    //         if (location.protocol != a.protocol || location.hostname != a.hostname || location.port != a.port) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // } -->
+    <!-- // If there is an image in the canvas, set crossorigin attribute
+
+    //                 // Regular expression to match the img tag
+    // var imgRegex = /<img[^>]*>/i;
+
+    // // Extract the img tag
+    // var imgTagMatch = htmlContent.match(imgRegex);
+
+    // // Check if the img tag was found
+    // if (imgTagMatch) {
+    //     var imgTag = imgTagMatch[0];
+    //     console.log("Found img tag:", imgTag);
+    //     // images[i].crossOrigin = "anonymous";
+    //     // Add crossorigin="anonymous" to the img tag
+    //     var modifiedImgTag = imgTag.replace('>', ' crossorigin="anonymous">');
+
+    //     console.log("Original img tag:", imgTag);
+    //     console.log("Modified img tag:", modifiedImgTag);
+    // } else {
+    //     console.log("No img tag found.");
+    // }
+ -->

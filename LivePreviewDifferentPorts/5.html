@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Live Preview with fetch API for same look</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body style="overflow-x: hidden;">
+    <!-- Working good, without width scroll and image is showing -->
+    <button onclick="loadContent()">Load Content</button>
+
+    <canvas id="myCanvas" style="border: 1px solid #000; max-width: 100%;"></canvas>
+
+    <script>
+        async function loadContent() {
+            var url = 'http://127.0.0.1:5500/index1.html';
+            var canvas = document.getElementById('myCanvas');
+
+            try {
+                // Fetch HTML content from another page
+                var response = await fetch(url);
+                var htmlContent = await response.text();
+
+                // Create a div element and set its content to the fetched HTML
+                var divElement = document.createElement('div');
+                divElement.innerHTML = htmlContent;
+
+                // Set max-width to 100% to prevent width overflow
+                divElement.style.maxWidth = '100%';
+
+                // Append the div to the body (off-screen)
+                divElement.style.position = 'absolute';
+                divElement.style.left = '-9999px';
+                document.body.appendChild(divElement);
+
+                // Get the dimensions of the content
+                var contentWidth = divElement.offsetWidth;
+                var contentHeight = divElement.offsetHeight;
+
+                // Set the canvas dimensions to match the content
+                canvas.width = contentWidth;
+                canvas.height = contentHeight;
+
+                // Use html2canvas to capture a screenshot of the div
+                var screenshot = await html2canvas(divElement);
+
+                // Draw the screenshot onto the canvas
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(screenshot, 0, 0, contentWidth, contentHeight);
+
+                // Extract image URL from the fetched HTML
+                var imageElement = divElement.querySelector('img');
+                console.log("imageElement.src ", imageElement.src);
+
+                // Create a URL object using the image source
+                var imageUrl = new URL(imageElement.src);
+
+                // Get the path (including filename) from the URL
+                var imagePath = imageUrl.pathname;
+                imageUrl = 'http://127.0.0.1:5500' + imagePath;
+                console.log("imagePath", imageUrl);
+
+                // Load the image separately
+                var image = new Image();
+                // Uncomment the next line if needed
+                // image.crossOrigin = 'anonymous'; // Set CORS attribute
+                image.src = imageUrl;
+
+                image.onload = function () {
+                    // Draw the image onto the canvas
+                    context.drawImage(image, 0, 0, 200, 200);
+
+                    // Remove the div from the body
+                    document.body.removeChild(divElement);
+                };
+            } catch (error) {
+                console.error('Error fetching or rendering HTML content:', error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Live Preview with fetch API for same look</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body style="overflow-x: hidden;">
+    <!-- Working good, without width scroll and image is showing -->
+    <button onclick="loadContent()">Load Content</button>
+
+    <canvas id="myCanvas" style="border: 1px solid #000; max-width: 100%;"></canvas>
+
+    <script>
+        async function loadContent() {
+            var url = 'http://127.0.0.1:5500/index1.html';
+            var canvas = document.getElementById('myCanvas');
+
+            try {
+                // Fetch HTML content from another page
+                var response = await fetch(url);
+                
+                // Check if the response is successful (status code 200)
+                if (!response.ok) {
+                    throw new Error('Failed to fetch HTML content. Status: ' + response.status);
+                }
+
+                var htmlContent = await response.text();
+
+                // Create a div element and set its content to the fetched HTML
+                var divElement = document.createElement('div');
+                divElement.innerHTML = htmlContent;
+
+                // Set max-width to 100% to prevent width overflow
+                divElement.style.maxWidth = '100%';
+
+                // Append the div to the body (off-screen)
+                divElement.style.position = 'absolute';
+                divElement.style.left = '-9999px';
+                document.body.appendChild(divElement);
+
+                // Get the dimensions of the content
+                var contentWidth = divElement.offsetWidth;
+                var contentHeight = divElement.offsetHeight;
+
+                // Set the canvas dimensions to match the content
+                canvas.width = contentWidth;
+                canvas.height = contentHeight;
+
+                // Create separate canvases for image and text
+                var imageCanvas = document.createElement('canvas');
+                var textCanvas = document.createElement('canvas');
+
+                // Set dimensions for individual canvases
+                imageCanvas.width = contentWidth;
+                imageCanvas.height = contentHeight;
+                textCanvas.width = contentWidth;
+                textCanvas.height = contentHeight;
+
+                // Draw the image onto the image canvas
+                var imageElement = divElement.querySelector('img');
+                var imageContext = imageCanvas.getContext('2d');
+                imageContext.drawImage(imageElement, 0, 0, contentWidth, contentHeight);
+
+                // Draw the text onto the text canvas
+                var textElement = divElement.querySelector('h1');
+                var textContext = textCanvas.getContext('2d');
+                textContext.font = '20px Arial'; // Customize the font and size
+                textContext.fillStyle = 'black'; // Customize the text color
+                textContext.fillText(textElement.textContent, 10, 30); // Customize the position
+
+                // Use html2canvas to capture a screenshot of the div
+                var imageScreenshot = await html2canvas(imageCanvas);
+                var textScreenshot = await html2canvas(textCanvas);
+
+                // Draw the screenshots onto the main canvas
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(imageScreenshot, 0, 0);
+                context.drawImage(textScreenshot, 0, 0);
+
+                // Remove the div from the body
+                document.body.removeChild(divElement);
+            } catch (error) {
+                console.error('Error fetching or rendering HTML content:', error.message);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><title>IFrame Live Preview</title></title>
+</head>
+<body>
+    <input type="text" id="urlInput" placeholder="Enter URL">
+    <button onclick="loadPage()">Load Page</button>
+  
+    <iframe id="myIframe" width="600" height="400" frameborder="0"></iframe>
+  
+    <script>
+      function loadPage() {
+        var url = document.getElementById('urlInput').value;
+        document.getElementById('myIframe').src = url;
+      }
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <title>Canvas Live Preview 1</title>
+</head>
+
+<body>
+
+    <textarea id="htmlInput" placeholder="Enter HTML content"></textarea>
+    <button onclick="loadContent()">Load Content</button>
+
+    <canvas id="myCanvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
+
+    <script>
+        function loadContent() {
+            var htmlContent = document.getElementById('htmlInput').value;
+            var canvas = document.getElementById('myCanvas');
+
+            // Create a div element and set its content to the HTML input
+            var divElement = document.createElement('div');
+            divElement.innerHTML = htmlContent;
+
+            // Append the div to the body (off-screen)
+            divElement.style.position = 'absolute';
+            divElement.style.left = '-9999px';
+            document.body.appendChild(divElement);
+
+            // Use html2canvas to capture a screenshot of the div
+            html2canvas(divElement).then(function (screenshot) {
+                // Draw the screenshot onto the canvas
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(screenshot, 0, 0, canvas.width, canvas.height);
+
+                // Remove the div from the body
+                document.body.removeChild(divElement);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

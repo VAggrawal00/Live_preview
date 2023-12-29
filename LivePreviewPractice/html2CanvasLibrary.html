@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Live Preview</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body>
+
+    <input type="text" id="urlInput" placeholder="Enter URL">
+    <button onclick="loadPage()">Load Page</button>
+
+    <div id="iframeContainer"></div>
+    <canvas id="myCanvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
+
+    <script>
+        async function loadPage() {
+            var url = document.getElementById('urlInput').value;
+            var iframeContainer = document.getElementById('iframeContainer');
+            var canvas = document.getElementById('myCanvas');
+
+            // Create an iframe and load the webpage
+            var iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframeContainer.innerHTML = '';
+            iframeContainer.appendChild(iframe);
+
+            // Wait for the iframe to load
+            iframe.onload = async function () {
+                // Use html2canvas to capture a screenshot of the iframe
+                var screenshot = await html2canvas(iframe);
+
+                // Draw the screenshot onto the canvas
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(screenshot, 0, 0, canvas.width, canvas.height);
+            };
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><title>Canvas Live Preview</title></title>
+</head>
+<body>
+    <input type="text" id="urlInput" placeholder="Enter URL">
+    <button onclick="loadPage()">Load Page</button>
+  
+    <canvas id="myCanvas" width="600" height="400" style="border:1px solid #000;"></canvas>
+  
+    <script>
+      function loadPage() {
+        var url = document.getElementById('urlInput').value;
+        var canvas = document.getElementById('myCanvas');
+        var context = canvas.getContext('2d');
+  
+        var img = new Image();
+        img.onload = function() {
+          context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        img.src = url;
+        console.log("I am here!");
+      }
+    </script>
+</body>
+</html>
