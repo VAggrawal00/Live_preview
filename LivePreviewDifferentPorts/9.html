@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Live Preview with fetch API for same look</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body style="overflow-x: hidden;">
+    <!-- For stylesheet -->
+    <button onclick="loadContent()">Load Content</button>
+
+    <canvas id="myCanvas" style="border: 1px solid #000; max-width: 100%;"></canvas>
+
+    <script>
+   
+//         async function loadContent() {
+//             var url = 'http://127.0.0.1:5500/index1.html';
+//             var canvas = document.getElementById('myCanvas');
+
+//             try {
+//                 // Fetch HTML content from another page
+//                 var response = await fetch(url);
+//                 var htmlContent = await response.text();
+
+//                 // Create a div element and set its content to the fetched HTML
+//                 var divElement = document.createElement('div');
+//                 divElement.innerHTML = htmlContent;
+
+//                 // Set max-width to 100% to prevent width overflow
+//                 divElement.style.maxWidth = '100%';
+
+//                 // Append the div to the body (off-screen)
+//                 divElement.style.position = 'absolute';
+//                 divElement.style.left = '-9999px';
+//                 document.body.appendChild(divElement);
+
+//                 // Get the dimensions of the content
+//                 var contentWidth = divElement.offsetWidth;
+//                 var contentHeight = divElement.offsetHeight;
+
+//                 // Set the canvas dimensions to match the content
+//                 canvas.width = contentWidth;
+//                 canvas.height = contentHeight;
+
+//                 // Use html2canvas to capture a screenshot of the div
+//                 var screenshot = await html2canvas(divElement);
+
+//                 // Draw the screenshot onto the canvas
+//                 var context = canvas.getContext('2d');
+//                 context.clearRect(0, 0, canvas.width, canvas.height);
+//                 context.drawImage(screenshot, 0, 0, contentWidth, contentHeight);
+
+//                 // Extract and draw all images from the fetched HTML
+//                 var imageElements = divElement.querySelectorAll('img');
+//                 imageElements.forEach(function (imageElement) {
+//                     var imageUrl = new URL(imageElement.src);
+//                     var imagePath = imageUrl.pathname;
+//                     var imageSrc = 'http://127.0.0.1:5500' + imagePath;
+//                     var imageWidth = imageElement.width;  // Extract width attribute
+//                     var imageHeight = imageElement.height;  // Extract height attribute
+//                     var imageTop = imageElement.offsetTop;  // Extract top position
+//                     var imageLeft = imageElement.offsetLeft;  // Extract left position
+
+//                     var image = new Image();
+//                     image.src = imageSrc;
+
+//                     image.onload = function () {
+//                         // Draw each image onto the canvas at its specified position
+//                         context.drawImage(image, imageLeft, imageTop, imageWidth, imageHeight);
+//                     };
+//                 });
+
+//                 // Extract and add stylesheets from the fetched HTML
+//                 var linkElements = divElement.querySelectorAll('link[rel="stylesheet"]');
+                              
+//                 linkElements.forEach(async function (linkElement) {
+//                     var href = linkElement.getAttribute('href');
+//                     var stylesheet = document.createElement('link');
+//                     stylesheet.setAttribute('rel', 'stylesheet');
+//                     stylesheet.setAttribute('type', 'text/css');
+//                     stylesheet.setAttribute('href', 'http://127.0.0.1:5500/' + href);
+//                     console.log("Fetching stylesheet:", stylesheet.href);
+
+//                     try {
+//                         var response = await fetch(stylesheet.href);
+//                         var stylesheetContent = await response.text();
+//                         console.log("Stylesheet content:", stylesheetContent);
+
+                        
+// // Extract *{} selector
+// var matchAllSelector = stylesheetContent.match(/\/\*\s*\*\s*\{([^}]+)\}\s*\*\//);
+// var allSelectorStyles = matchAllSelector ? matchAllSelector[1] : '';
+
+// console.log('Styles for *{}:', allSelectorStyles);
+
+// // Extract body{} styles
+// var matchBody = stylesheetContent.match(/body\s*\{([^}]+)\}/);
+// var bodyStyles = matchBody ? matchBody[1] : '';
+
+// console.log('Styles for body{}:', bodyStyles);
+//                         // Example: Apply background color to specific elements
+// var specificElements = divElement.querySelectorAll('.your-specific-class'); // Adjust the selector
+// specificElements.forEach(function (element) {
+//     element.style.backgroundColor = 'aqua';
+// });
+//                     } catch (error) {
+//                         console.error('Error fetching stylesheet:', error.message);
+//                     }
+
+//                     document.head.appendChild(stylesheet);
+//                 });
+
+
+//                 // Remove the div from the body
+//                 document.body.removeChild(divElement);
+//             } catch (error) {
+//                 console.error('Error fetching or rendering HTML content:', error.message);
+//             }
+//         }
+
+
+async function loadContent() {
+    var url = 'http://127.0.0.1:5500/index1.html';
+    var canvas = document.getElementById('myCanvas');
+
+    try {
+        // Fetch HTML content from another page
+        var response = await fetch(url);
+        var htmlContent = await response.text();
+
+        // Create a div element and set its content to the fetched HTML
+        var divElement = document.createElement('div');
+        divElement.innerHTML = htmlContent;
+
+        // Set max-width to 100% to prevent width overflow
+        divElement.style.maxWidth = '100%';
+
+        // Append the div to the body (off-screen)
+        divElement.style.position = 'absolute';
+        divElement.style.left = '-9999px';
+        document.body.appendChild(divElement);
+
+        // Get the dimensions of the content
+        var contentWidth = divElement.offsetWidth;
+        var contentHeight = divElement.offsetHeight;
+
+        // Set the canvas dimensions to match the content
+        canvas.width = contentWidth;
+        canvas.height = contentHeight;
+
+        // Use html2canvas to capture a screenshot of the div
+        var screenshot = await html2canvas(divElement);
+
+        // Draw the screenshot onto the canvas
+        var context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(screenshot, 0, 0, contentWidth, contentHeight);
+
+        // Extract and draw all images from the fetched HTML
+        var imageElements = divElement.querySelectorAll('img');
+        imageElements.forEach(function (imageElement) {
+            var imageUrl = new URL(imageElement.src);
+            var imagePath = imageUrl.pathname;
+            var imageSrc = 'http://127.0.0.1:5500' + imagePath;
+            var imageWidth = imageElement.width;  // Extract width attribute
+            var imageHeight = imageElement.height;  // Extract height attribute
+            var imageTop = imageElement.offsetTop;  // Extract top position
+            var imageLeft = imageElement.offsetLeft;  // Extract left position
+
+            var image = new Image();
+            image.src = imageSrc;
+
+            image.onload = function () {
+                // Draw each image onto the canvas at its specified position
+                context.drawImage(image, imageLeft, imageTop, imageWidth, imageHeight);
+            };
+        });
+
+        // Extract and add stylesheets from the fetched HTML
+        var linkElements = divElement.querySelectorAll('link[rel="stylesheet"]');
+
+        linkElements.forEach(async function (linkElement) {
+            var href = linkElement.getAttribute('href');
+            var stylesheet = document.createElement('link');
+            stylesheet.setAttribute('rel', 'stylesheet');
+            stylesheet.setAttribute('type', 'text/css');
+            stylesheet.setAttribute('href', 'http://127.0.0.1:5500/' + href);
+            console.log("Fetching stylesheet:", stylesheet.href);
+
+            try {
+                var response = await fetch(stylesheet.href);
+                var stylesheetContent = await response.text();
+                console.log("Stylesheet content:", stylesheetContent);
+
+                // Extract *{} selector
+                var matchAllSelector = stylesheetContent.match(/\/\*\s*\*\s*\{([^}]+)\}\s*\*\//);
+                var allSelectorStyles = matchAllSelector ? matchAllSelector[1] : '';
+
+                console.log('Styles for *{}:', allSelectorStyles);
+
+                // Extract body{} styles
+                var matchBody = stylesheetContent.match(/body\s*\{([^}]+)\}/);
+                var bodyStyles = matchBody ? matchBody[1] : '';
+
+                console.log('Styles for body{}:', bodyStyles);
+
+                // Apply extracted styles for *{} and body{} to specific elements
+                applyStylesToElements(divElement, allSelectorStyles, bodyStyles);
+            } catch (error) {
+                console.error('Error fetching stylesheet:', error.message);
+            }
+
+            document.head.appendChild(stylesheet);
+        });
+
+        // Remove the div from the body
+        document.body.removeChild(divElement);
+    } catch (error) {
+        console.error('Error fetching or rendering HTML content:', error.message);
+    }
+}
+
+function applyStylesToElements(container, allSelectorStyles, bodyStyles) {
+    // Example: Apply background color to specific elements
+    var specificElements = container.querySelectorAll('.your-specific-class'); // Adjust the selector
+    specificElements.forEach(function (element) {
+        element.style.backgroundColor = 'aqua';
+    });
+
+    // Apply *{} styles to all elements
+    container.style.cssText += allSelectorStyles;
+
+    // Apply body{} styles to the body
+    document.body.style.cssText += bodyStyles;
+}
+
+function applyStylesToElements(container, allSelectorStyles, bodyStyles) {
+    // Example: Apply background color to specific elements
+    var specificElements = container.querySelectorAll('.your-specific-class'); // Adjust the selector
+    specificElements.forEach(function (element) {
+        element.style.backgroundColor = 'aqua';
+    });
+
+    // Apply *{} styles to all elements
+    container.style.cssText += allSelectorStyles;
+
+    // Apply body{} styles to the body
+    document.body.style.cssText += bodyStyles;
+}
+
+    </script>
+</body>
+
+</html>

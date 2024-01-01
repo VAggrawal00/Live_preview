@@ -1,3 +1,14 @@
 *{
     background-color: aqua;
 }
+
+body{
+    /* background-color: aqua; */
+    border: 5px solid red;
+}
+
+.text{
+    font-size: 20px;
+    background-color: black;
+    color: white;
+}
